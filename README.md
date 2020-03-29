@@ -22,7 +22,7 @@ your editor and that it is set to automatically format on save.
 
 ## Deployment
 
-TBC
+TBD
 
 ## Languages/Technologies Utilized
 * Python
