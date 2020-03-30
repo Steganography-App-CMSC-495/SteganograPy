@@ -8,6 +8,8 @@ verify_ssl = true
 [packages]
 autopep8 = "*"
 pillow = "*"
+piexif = "*"
+stegano = "*"
 
 [requires]
 python_version = "3.8"
