@@ -1,4 +1,5 @@
 import os
+
 from stegano import lsb
 
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
