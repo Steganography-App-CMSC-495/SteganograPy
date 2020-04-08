@@ -1,4 +1,4 @@
-import steg_util as core
+import steg_core as core
 
 if __name__ == '__main__':
     test = 'This is a conversion test! With @ 123--987.0'
