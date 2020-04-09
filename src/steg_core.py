@@ -4,15 +4,14 @@ import copy
 
 def str2binary(string):
     """Returns the binary string of the input string"""
-    return ''.join(format(ord(i), 'b').zfill(8) for i in string)
+    return ''.join(format(byt, 'b') for byt in string.encode('ascii'))
 
 
 def binary2str(binary):
     """Returns the string representatin of the binary data"""
-    str_data = ''
-    for i in range(0, len(binary), 8):
-        str_data += chr(int(binary[i:i+8], 2))
-    return str_data
+    _bytes = bytes(int(binary[i: i + 8], 2)
+                   for i in range(0, len(binary), 8))
+    return _bytes.decode('utf-8', "replace")
 
 
 def getImageData(imagePath):
@@ -35,7 +34,7 @@ def cloneImageData(data):
 def saveImage(data, path='./image.png'):
     """ Saves an image to disk using data
     retrieving/modified from loadImage """
-    with Image.new("RGBA", (data['width'], data['height'])) as img:
+    with Image.new("RGB", (data['width'], data['height'])) as img:
         img.putdata([tuple(data['pixels'][y][x])
                      for y in range(data['height'])
                      for x in range(data['width'])])
@@ -53,8 +52,11 @@ def evenOddEncryption(_data, msg):
      by whether the bit is even or odd to make color component
      even or odd """
     binary = str2binary(msg)
+    conversion = binary2str(binary)
+    print(f'binary: {binary}')
+    print(f'conversion: {conversion}')
     # make sure there are enough bytes in the data for this msg
-    if len(binary) > getEvenOddMessageLimit(_data):
+    if len(msg) > getEvenOddMessageLimit(_data):
         raise RuntimeError('There is not enough image '
                            'bytes to represent the message.')
 
