@@ -42,13 +42,19 @@ def saveImage(data, path='./image.png'):
         img.save(path)
 
 
+def getEvenOddMessageLimit(data):
+    """ Calculates how many characters the image can contain
+    using even odd encryption """
+    return int(data['width'] * data['height'] * 3 / 9)
+
+
 def evenOddEncryption(_data, msg):
-    """ Encrypts the msg into the image data by offseting the color
-     by whether the bit is even or odd to make color even or odd """
+    """ Encrypts the msg into the image data by offsetting the color
+     by whether the bit is even or odd to make color component
+     even or odd """
     binary = str2binary(msg)
     # make sure there are enough bytes in the data for this msg
-    pixelCount = _data['width'] * _data['height']
-    if len(binary) > pixelCount * 3:
+    if len(binary) > getEvenOddMessageLimit(_data):
         raise RuntimeError('There is not enough image '
                            'bytes to represent the message.')
 
@@ -99,7 +105,44 @@ def evenOddEncryption(_data, msg):
     return data
 
 
-def getDifferenceImage(dataA, dataB, scale=1.0):
+def evenOddDecryption(data):
+    """ Attempts to extract a message from the image data """
+    # first, build flat representation of image
+    components = [data['pixels'][y][x][comp]
+                  for y in range(data['height'])
+                  for x in range(data['width'])
+                  for comp in range(0, 3)]
+
+    binary = ''
+
+    # now it is a list of component values
+    # compile a binary even odd interpretation
+    done = False
+    for i in range(0, len(components), 9):
+        if done:
+            break
+        for j in range(0, 9):
+            # make sure a value exists (out of bounds)
+            if (i + j < len(components)):
+                val = components[i+j]
+                if j == 8:
+                    # end of message detection
+                    # don't add onto binary here since
+                    # 9th bit not part of message
+                    if val % 2 != 0:
+                        done = True
+                else:
+                    if val % 2 == 0:
+                        binary += '0'
+                    else:
+                        binary += '1'
+            else:
+                break
+
+    return binary2str(binary)
+
+
+def getDifferenceData(dataA, dataB, scale=50):
     """ Returns a new data object comprised of the byte differences
      between the color information for validation purposes.
      Scale can be used to debug the difference image, lightening
@@ -107,7 +150,7 @@ def getDifferenceImage(dataA, dataB, scale=1.0):
     if ((dataA['width'] != dataB['width']) or
             (dataA['height'] != dataB['height'])):
         raise RuntimeError(
-            'Comparing image data must have same dimensions')
+            'Comparing image data must have same sizes')
     data = [[[int(abs(dataA['pixels'][y][x][compIndex]
                       - dataB['pixels'][y][x][compIndex]) * scale)
               for compIndex in range(0, 3)]
