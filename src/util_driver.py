@@ -24,6 +24,7 @@ def printImageData(data):
     print(f"Image is {data['width']} pixels wide "
           f"and {data['height']} pixels high")
     print('Pixel data:')
+    print(f"Bands: {data['bands']}")
     for y in range(data['height']):
         for x in range(data['width']):
             print(data['pixels'][y][x])
@@ -48,8 +49,8 @@ def runImageEncryption(data, msg):
     print('\n*** Image Encryption testing ***\n')
     print(f'Secret message: {msg}')
     enc_data = core.evenOddEncryption(data, msg)
-    core.saveImage(enc_data, './assets/images/encrypted_image.png')
-    print('File saved to assets/images/encrypted_image.png')
+    core.saveImage(enc_data, './assets/images/encrypted.png')
+    print('File saved to assets/images/encrypted.png')
     return enc_data
 
 
@@ -73,7 +74,7 @@ if __name__ == '__main__':
     runImageSavingTest(runImagePixelExtractionTest())
 
     data = core.getImageData(
-        './assets/images/encryption_test.png')
+        './assets/images/lowres_image.png')
     secret = 'We are what we repeatedly do.' \
         ' Excellence, then, is not an act,' \
         ' but a habit. - Aristotle'
@@ -83,6 +84,6 @@ if __name__ == '__main__':
     # grabs new image data because this is how the library will
     # most likely be used
     dec_secret = runImageDecryption(core.getImageData(
-        './assets/images/encrypted_image.png'))
+        './assets/images/encrypted.png'))
 
     print(f'Secret equal to decrypted secret: {secret == dec_secret}')

@@ -4,15 +4,27 @@ import copy
 
 def str2binary(string):
     """Returns the binary string of the input string"""
-    return ''.join(format(ord(i), 'b').zfill(8) for i in string)
+    # Must encode input string into utf-8 for valid decoding
+    # After that, per byte that encode returns, format it into
+    # binary and make sure it is zero padding to 8 bits
+    # then join the list back together into a series of bits
+    return ''.join('{:b}'.format(b).zfill(8)
+                   for b in string.encode('utf-8', 'replace'))
 
 
 def binary2str(binary):
     """Returns the string representatin of the binary data"""
-    str_data = ''
-    for i in range(0, len(binary), 8):
-        str_data += chr(int(binary[i:i+8], 2))
-    return str_data
+    # Splits bits into series of 8, compiles a list of
+    # series of 8 bit strings, converts them to a decimal number
+    # and puts the entire list of numbers into a bytes object
+    # this then can be decoded into valid utf-8 from here
+    str_data = bytes([int(x, 2)
+                      for x in [binary[i:i+8]
+                                for i in range(0, len(binary), 8)
+                                ]
+                      ])
+
+    return str_data.decode('utf-8', 'replace')
 
 
 def getImageData(imagePath):
@@ -24,7 +36,9 @@ def getImageData(imagePath):
                 'height': img.size[1],
                 'pixels': [[list(img.getpixel((x, y)))
                             for x in range(img.size[1])]
-                           for y in range(img.size[0])]}
+                           for y in range(img.size[0])],
+                'bands': img.getbands()
+                }
 
 
 def cloneImageData(data):
@@ -35,7 +49,7 @@ def cloneImageData(data):
 def saveImage(data, path='./image.png'):
     """ Saves an image to disk using data
     retrieving/modified from loadImage """
-    with Image.new("RGBA", (data['width'], data['height'])) as img:
+    with Image.new("".join(data['bands']), (data['width'], data['height'])) as img:
         img.putdata([tuple(data['pixels'][y][x])
                      for y in range(data['height'])
                      for x in range(data['width'])])
@@ -54,7 +68,7 @@ def evenOddEncryption(_data, msg):
      even or odd """
     binary = str2binary(msg)
     # make sure there are enough bytes in the data for this msg
-    if len(binary) > getEvenOddMessageLimit(_data):
+    if len(msg) > getEvenOddMessageLimit(_data):
         raise RuntimeError('There is not enough image '
                            'bytes to represent the message.')
 
@@ -95,7 +109,7 @@ def evenOddEncryption(_data, msg):
 
         # move along component/pixel data
         compIndex += 1
-        if compIndex == 3:
+        if compIndex == len(data['bands']):
             compIndex = 0
             x += 1
             if (x == data['width']):
@@ -111,7 +125,7 @@ def evenOddDecryption(data):
     components = [data['pixels'][y][x][comp]
                   for y in range(data['height'])
                   for x in range(data['width'])
-                  for comp in range(0, 3)]
+                  for comp in range(len(data['bands']))]
 
     binary = ''
 
@@ -151,12 +165,16 @@ def getDifferenceData(dataA, dataB, scale=50):
             (dataA['height'] != dataB['height'])):
         raise RuntimeError(
             'Comparing image data must have same sizes')
+    if dataA['bands'] != dataB['bands']:
+        raise RuntimeError('Comparing image data must use the same bands')
+
     data = [[[int(abs(dataA['pixels'][y][x][compIndex]
                       - dataB['pixels'][y][x][compIndex]) * scale)
-              for compIndex in range(0, 3)]
+              for compIndex in range(len(dataA['bands']))]
              for x in range(dataA['width'])]
             for y in range(dataA['height'])]
 
-    return {'width': dataA['width'],
-            'height': dataA['height'],
-            'pixels': data}
+    img_data = cloneImageData(dataA)
+    img_data['pixels'] = data
+
+    return img_data
