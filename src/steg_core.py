@@ -49,7 +49,7 @@ def cloneImageData(data):
 def saveImage(data, path='./image.png'):
     """ Saves an image to disk using data
     retrieving/modified from loadImage """
-    with Image.new("RGB", (data['width'], data['height'])) as img:
+    with Image.new("".join(data['bands']), (data['width'], data['height'])) as img:
         img.putdata([tuple(data['pixels'][y][x])
                      for y in range(data['height'])
                      for x in range(data['width'])])
