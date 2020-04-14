@@ -6,11 +6,13 @@ import axios from "axios";
 function App() {
   const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    axios.get("/message").then((res) => {
+  const getMessage = (endpoint) => {
+    axios.get(endpoint).then((res) => {
       setMessage(res.data.message);
-      console.log("res", res);
     });
+  };
+  useEffect(() => {
+    getMessage("/message");
   }, []);
   const display = `Message ----> ${message}`;
   return (
@@ -19,6 +21,8 @@ function App() {
         <img src={logo} className="App-logo" alt="logo" />
         <h1>SteganograPy</h1>
         <div>{display}</div>
+        <button onClick={() => getMessage("/message")}>Message 1</button>
+        <button onClick={() => getMessage("/m2")}>Message 2</button>
       </header>
     </div>
   );
