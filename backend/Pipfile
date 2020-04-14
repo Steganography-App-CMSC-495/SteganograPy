@@ -10,6 +10,8 @@ autopep8 = "*"
 pillow = "*"
 piexif = "*"
 stegano = "*"
+flask = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.8"

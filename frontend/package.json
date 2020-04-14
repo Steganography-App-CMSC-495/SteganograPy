@@ -12,6 +12,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start-api": "(cd ../backend && pipenv shell) && pipenv run flask",
+    "flask": "(pipenv shell && pipenv run flask)",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -30,5 +32,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "proxy": "http://localhost:5000"
 }
