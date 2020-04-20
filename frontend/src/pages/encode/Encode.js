@@ -13,8 +13,8 @@ function Encode() {
       direction="column"
     >
       <Grid item>
-        <Typography variant="h2" color="primary">
-          Encode
+        <Typography variant="h4" color="primary">
+          Enter a message to encode and upload an image
         </Typography>
       </Grid>
       <Grid item>

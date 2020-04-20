@@ -5,8 +5,8 @@ import { NavLink, withRouter } from "react-router-dom";
 function Header(props) {
   const pages = [
     { link: "/", title: "Home" },
-    { link: "/encode", title: "Encode" },
-    { link: "/decode", title: "Decode" },
+    { link: "/encode", title: "Encode Image" },
+    { link: "/decode", title: "Decode Image" },
     { link: "/about", title: "About" },
     { link: "/team", title: "Team" },
   ];
@@ -23,7 +23,7 @@ function Header(props) {
       <Grid container direction="column" alignItems="center">
         <Typography
           variant="h1"
-          style={{ margin: 20, borderBottom: "5px solid #000" }}
+          style={{ margin: 20, borderBottom: "5px solid" }}
         >
           {props.location.pathname === "/"
             ? "STEGANOGRAPY"
@@ -32,7 +32,7 @@ function Header(props) {
         <Grid container item justify="space-evenly">
           {pages.map((page, i) => (
             <NavLink key={i} to={page.link}>
-              {page.title}
+              {page.title.toUpperCase()}
             </NavLink>
           ))}
         </Grid>

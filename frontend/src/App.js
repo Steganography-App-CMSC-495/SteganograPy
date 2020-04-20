@@ -6,6 +6,7 @@ import Header from "./components/header/Header";
 import Team from "./pages/team/Team";
 import About from "./pages/about/About";
 import Decode from "./pages/decode/Decode";
+import Theme from "./components/theme/Theme";
 function App() {
   // const [message, setMessage] = useState("");
 
@@ -19,15 +20,17 @@ function App() {
   // }, []);
   // const display = `Message ----> ${message}`;
   return (
-    <Router>
-      <Header />
-      <Switch>
-        <Route path={"/encode"} component={Encode}></Route>
-        <Route path={"/decode"} component={Decode}></Route>
-        <Route path={"/about"} component={About}></Route>
-        <Route path={"/team"} component={Team}></Route>
-      </Switch>
-    </Router>
+    <Theme>
+      <Router>
+        <Header />
+        <Switch>
+          <Route path={"/encode"} component={Encode}></Route>
+          <Route path={"/decode"} component={Decode}></Route>
+          <Route path={"/about"} component={About}></Route>
+          <Route path={"/team"} component={Team}></Route>
+        </Switch>
+      </Router>
+    </Theme>
   );
 }
 

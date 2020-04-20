@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import UploadButton from "../upload-button/UploadButton";
-import { Grid } from "@material-ui/core";
+import React, { useState } from "react";
 import ImagePreview from "../img-preview/ImagePreview";
+import UploadButton from "../upload-button/UploadButton";
 const useStyles = makeStyles((theme) => ({
   root: {
     "& .MuiTextField-root": {
       margin: theme.spacing(1),
-      width: "25ch",
+      width: "35ch",
       backgroundColor: "#FFF",
     },
   },
@@ -19,6 +19,7 @@ export default function UploadForm() {
   const [value, setValue] = useState("");
   const [isDisabled, toggleDisabled] = useState(true);
   const [file, setFile] = useState(null);
+  const [imagePreviewUrl, setImage] = useState(null);
   const [isLoading, setLoading] = useState(true);
 
   const handleSubmit = (event) => {
@@ -26,14 +27,23 @@ export default function UploadForm() {
     console.log("submitted");
   };
   const handleFile = (e) => {
-    console.log("handle file");
-    setFile(URL.createObjectURL(e.target.files[0]));
-    setLoading(false);
+    setLoading(true);
+    setImage(null);
+    let reader = new FileReader();
+    let targetFile = e.target.files[0];
+    if (targetFile) {
+      reader.onloadend = () => {
+        setFile(targetFile);
+        setImage(reader.result);
+      };
+      setLoading(false);
+      reader.readAsDataURL(targetFile);
+    }
   };
   const handleChange = (event) => {
     const message = event.target.value;
     setValue(message);
-    if (message.length > 2) {
+    if (message.length > 0) {
       toggleDisabled(false);
     } else {
       toggleDisabled(true);
@@ -41,15 +51,15 @@ export default function UploadForm() {
   };
 
   return (
-    <Grid item xs={12}>
-      <form
-        className={classes.root}
-        noValidate
-        autoComplete="off"
-        onSubmit={handleSubmit}
-      >
+    <form
+      className={classes.root}
+      noValidate
+      autoComplete="off"
+      onSubmit={handleSubmit}
+    >
+      <Grid container direction="column" alignItems="center">
         <Grid item xs={12}>
-          <ImagePreview file={file} loading={isLoading} />
+          <ImagePreview file={imagePreviewUrl} loading={isLoading} />
           <TextField
             id="filled-multiline-static"
             label="Message"
@@ -62,7 +72,7 @@ export default function UploadForm() {
           />
         </Grid>
         <UploadButton isDisabled={isDisabled} handleFile={handleFile} />
-      </form>
-    </Grid>
+      </Grid>
+    </form>
   );
 }
