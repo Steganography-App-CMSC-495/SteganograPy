@@ -1,12 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import "./App.css";
-import Encode from "./pages/encode";
-import Header from "./components/header/Header";
-import Team from "./pages/team/Team";
-import About from "./pages/about/About";
-import Decode from "./pages/decode/Decode";
-import Theme from "./components/theme/Theme";
+import { Encode, Decode, Team, About } from "./pages";
+import { Theme, Header } from "./components";
+
 function App() {
   // const [message, setMessage] = useState("");
 

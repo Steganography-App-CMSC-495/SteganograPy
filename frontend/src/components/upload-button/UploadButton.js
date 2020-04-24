@@ -12,9 +12,11 @@ const useStyles = makeStyles((theme) => ({
     display: "none",
   },
   button: {
+    margin: 10,
     "&.Mui-disabled": {
       backgroundColor: theme.palette.error.dark,
       color: theme.palette.error.contrastText,
+      margin: 10,
     },
   },
 }));

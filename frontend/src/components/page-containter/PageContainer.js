@@ -1,4 +1,4 @@
-import { Grid, withTheme, useTheme } from "@material-ui/core";
+import { Grid, withTheme } from "@material-ui/core";
 import React from "react";
 const PageContainer = (BaseComponent) => (RouteComponentProps) => {
   return (

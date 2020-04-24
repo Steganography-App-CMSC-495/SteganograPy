@@ -1,9 +1,10 @@
-import { Grid } from "@material-ui/core";
+import { Grid, Button, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import React, { useState } from "react";
 import ImagePreview from "../img-preview/ImagePreview";
 import UploadButton from "../upload-button/UploadButton";
+import axios from "axios";
 const useStyles = makeStyles((theme) => ({
   root: {
     "& .MuiTextField-root": {
@@ -17,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
 export default function UploadForm() {
   const classes = useStyles();
   const [value, setValue] = useState("");
+  const [status, setStatus] = useState("");
   const [isDisabled, toggleDisabled] = useState(true);
   const [file, setFile] = useState(null);
   const [imagePreviewUrl, setImage] = useState(null);
@@ -25,6 +27,16 @@ export default function UploadForm() {
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("submitted");
+    let formData = new FormData();
+    formData.append("message", value);
+    formData.append("upload", file, "fileName");
+    console.log("formData", formData);
+    axios.post("api/encode", formData).then((res) => {
+      setStatus("Successfully Submitted");
+    });
+    axios.get("/message").then((res) => {
+      console.log("res.message", res);
+    });
   };
   const handleFile = (e) => {
     setLoading(true);
@@ -57,8 +69,9 @@ export default function UploadForm() {
       autoComplete="off"
       onSubmit={handleSubmit}
     >
-      <Grid container direction="column" alignItems="center">
-        <Grid item xs={12}>
+      <Grid container direction="column" alignItems="center" xs={12}>
+        <Typography variant="h3">{status}</Typography>
+        <Grid item xs={7} sm={12}>
           <ImagePreview file={imagePreviewUrl} loading={isLoading} />
           <TextField
             id="filled-multiline-static"
@@ -72,6 +85,11 @@ export default function UploadForm() {
           />
         </Grid>
         <UploadButton isDisabled={isDisabled} handleFile={handleFile} />
+        {!isLoading && (
+          <Button variant="contained" onClick={handleSubmit}>
+            Submit
+          </Button>
+        )}
       </Grid>
     </form>
   );

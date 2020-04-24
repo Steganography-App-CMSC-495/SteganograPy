@@ -1,5 +1,5 @@
 import { createMuiTheme, ThemeProvider } from "@material-ui/core";
-import React, { Children } from "react";
+import React from "react";
 
 const Primary = "#307FE2";
 const PrimaryDark = "#083D77";

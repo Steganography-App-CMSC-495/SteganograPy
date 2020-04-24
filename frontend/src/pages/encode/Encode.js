@@ -1,7 +1,6 @@
 import { Grid, Typography } from "@material-ui/core";
 import React from "react";
-import { withPageContainer } from "../../components/page-containter";
-import UploadForm from "../../components/upload-form/UploadForm";
+import { withPageContainer, UploadForm } from "../../components";
 
 function Encode() {
   return (
