@@ -19,6 +19,22 @@ You will need the following installed locally on your machine:
 - VSCode
 - [`autopep8`](https://github.com/hhatto/autopep8) for Python. Ensure that it is installed on
 your editor and that it is set to automatically format on save.
+## How to contribute 
+- Choose a task from [Trello](https://trello.com/b/wSnjd69D/steganograpy) to complete
+- Create a new branch from dev - according to the naming convention (e.g. SB-1, SB-2), making sure that you have pull the latest updates from dev
+  1. `git pull origin dev`
+  2. `git checkout -b SB-5 dev`
+- Write and test you code. (Ensure to make meaningful commits. This comes in handy if we have an problems like merge conflicts)
+  1. `git add <file.py>`
+  2. `git commit -m "Added functionality for image upload"`
+- When you are ready to push your commits, pull from dev again to make sure you are up to date, push, and make a pull request
+  1. `git pull origin dev`
+  2. `git push -u origin SB-5`
+  3. Make a pull request in GitHub (Explain how to QA your code and select someone to review it)
+   ![Pull Request Example](./assets/images/pull_request_ex.png)
+- Once your code has been reviewed it will either be merged into dev or have changes requested
+  
+  
 
 ## Deployment
 
