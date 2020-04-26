@@ -44,6 +44,7 @@ const theme = createMuiTheme({
     },
   },
   typography: {
+    fontFamily: "El Messiri",
     h1: {
       //   fontSize: "22px",
       //   lineHeight: "32px",
