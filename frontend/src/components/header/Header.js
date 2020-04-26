@@ -3,6 +3,9 @@ import React from "react";
 import { NavLink, withRouter } from "react-router-dom";
 
 function Header(props) {
+  const {
+    location: { pathname },
+  } = props;
   const pages = [
     { link: "/", title: "Home" },
     { link: "/encode", title: "Encode Image" },
@@ -12,7 +15,6 @@ function Header(props) {
   ];
   const getTitle = (path) => {
     const match = pages.find((element) => {
-      console.log("element.link", element.link, path);
       return element.link === path;
     });
     return match.title.toLowerCase();
@@ -25,17 +27,19 @@ function Header(props) {
           variant="h1"
           style={{ margin: 20, borderBottom: "5px solid" }}
         >
-          {props.location.pathname === "/"
+          {pathname === "/"
             ? "STEGANOGRAPY"
             : getTitle(props.location.pathname)}
         </Typography>
-        <Grid container item justify="space-evenly">
-          {pages.map((page, i) => (
-            <NavLink key={i} to={page.link}>
-              {page.title.toUpperCase()}
-            </NavLink>
-          ))}
-        </Grid>
+        {pathname !== "/" && (
+          <Grid container item justify="space-evenly">
+            {pages.map((page, i) => (
+              <NavLink key={i} to={page.link}>
+                {page.title.toUpperCase()}
+              </NavLink>
+            ))}
+          </Grid>
+        )}
       </Grid>
     </header>
   );

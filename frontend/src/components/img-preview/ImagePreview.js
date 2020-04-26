@@ -6,8 +6,8 @@ import React from "react";
 
 const useStyles = makeStyles((theme) => ({
   card: {
-    maxWidth: 345,
-    margin: theme.spacing(2),
+    width: "35ch",
+    margin: theme.spacing(1),
   },
   media: {
     height: 190,
@@ -20,7 +20,7 @@ export default function ImagePreview(props) {
   const classes = useStyles();
 
   return (
-    <Card className={classes.card}>
+    <Card className={classes.card} component="div">
       {loading ? (
         <Skeleton animation="wave" variant="rect" className={classes.media} />
       ) : (

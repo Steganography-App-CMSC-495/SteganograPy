@@ -1,5 +1,23 @@
+import { Grid, Typography } from "@material-ui/core";
 import React from "react";
+import { withPageContainer } from "../../components";
 
-export default function About() {
-  return <div></div>;
+function About() {
+  return (
+    <Grid
+      container
+      item
+      justify="space-evenly"
+      alignItems="center"
+      direction="column"
+    >
+      <Grid item>
+        <Typography variant="h4" color="primary">
+          About
+        </Typography>
+      </Grid>
+    </Grid>
+  );
 }
+
+export default withPageContainer(About);

@@ -9,7 +9,7 @@ const Success = "#23CE6B";
 const Danger = "#FE4A49";
 const Info = "#F4F4F4";
 const DangerDark = "#BA274A";
-const Grey = "#F4F4F4";
+// const Grey = "#F4F4F4";
 const SubTitle = "#858C91";
 const White = "#FFFFFF";
 
@@ -61,11 +61,11 @@ const theme = createMuiTheme({
     //       fontSize: "18px",
     //       lineHeight: "28px",
     //     },
-    //     body1: {
-    //       color: Secondary,
-    //       fontSize: "14px",
-    //       lineHeight: "26px",
-    //     },
+    body2: {
+      color: White,
+      fontSize: "14px",
+      lineHeight: "26px",
+    },
     //     body2: {
     //       fontSize: "13px",
     //       lineHeight: "26px",

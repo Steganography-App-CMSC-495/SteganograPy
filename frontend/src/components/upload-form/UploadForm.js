@@ -1,10 +1,19 @@
-import { Grid, Button, Typography } from "@material-ui/core";
+import { Button, Grid } from "@material-ui/core";
+import Snackbar from "@material-ui/core/Snackbar";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import React, { useState } from "react";
+import MuiAlert from "@material-ui/lab/Alert";
+import axios from "axios";
+import React, { useState, useEffect } from "react";
 import ImagePreview from "../img-preview/ImagePreview";
 import UploadButton from "../upload-button/UploadButton";
-import axios from "axios";
+import SimpleBackdrop from "../backdrop/Backdrop";
+import { withRouter } from "react-router-dom";
+
+const Alert = (props) => {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+};
+
 const useStyles = makeStyles((theme) => ({
   root: {
     "& .MuiTextField-root": {
@@ -15,28 +24,38 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function UploadForm() {
+function UploadForm(props) {
   const classes = useStyles();
   const [value, setValue] = useState("");
   const [status, setStatus] = useState("");
+  const [severity, setSeverity] = useState("success");
   const [isDisabled, toggleDisabled] = useState(true);
   const [file, setFile] = useState(null);
   const [imagePreviewUrl, setImage] = useState(null);
   const [isLoading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [backdrop, setBackdrop] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("submitted");
+    setBackdrop(true);
     let formData = new FormData();
     formData.append("message", value);
     formData.append("upload", file, "fileName");
-    console.log("formData", formData);
-    axios.post("api/encode", formData).then((res) => {
-      setStatus("Successfully Submitted");
-    });
-    axios.get("/message").then((res) => {
-      console.log("res.message", res);
-    });
+    axios
+      .post(props.url, formData)
+      .then(() => {
+        setBackdrop(false);
+        setStatus("Successfully Submitted");
+        setSeverity("success");
+        setOpen(true);
+      })
+      .catch((error) => {
+        setBackdrop(false);
+        setStatus("Error", error?.response);
+        setSeverity("error");
+        setOpen(true);
+      });
   };
   const handleFile = (e) => {
     setLoading(true);
@@ -61,36 +80,58 @@ export default function UploadForm() {
       toggleDisabled(true);
     }
   };
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+  useEffect(() => {
+    if (!props.hasText) {
+      toggleDisabled(false);
+    }
+  }, [props]);
 
   return (
-    <form
-      className={classes.root}
-      noValidate
-      autoComplete="off"
-      onSubmit={handleSubmit}
-    >
-      <Grid container direction="column" alignItems="center" xs={12}>
-        <Typography variant="h3">{status}</Typography>
-        <Grid item xs={7} sm={12}>
-          <ImagePreview file={imagePreviewUrl} loading={isLoading} />
-          <TextField
-            id="filled-multiline-static"
-            label="Message"
-            multiline
-            rows={4}
-            placeholder="Enter a message to encrypt"
-            variant="filled"
-            onChange={handleChange}
-            className={classes.input}
-          />
+    <>
+      <form
+        className={classes.root}
+        noValidate
+        autoComplete="off"
+        onSubmit={handleSubmit}
+      >
+        <Grid container direction="column" alignItems="center">
+          <Grid item xs={7} sm={12}>
+            <ImagePreview file={imagePreviewUrl} loading={isLoading} />
+            {props.hasText && (
+              <TextField
+                id="filled-multiline-static"
+                label="Message"
+                multiline
+                rows={4}
+                placeholder="Enter a message to encrypt"
+                variant="filled"
+                onChange={handleChange}
+                className={classes.input}
+              />
+            )}
+          </Grid>
+          <UploadButton isDisabled={isDisabled} handleFile={handleFile} />
+          {!isLoading && !isDisabled && (
+            <Button variant="contained" onClick={handleSubmit}>
+              Submit
+            </Button>
+          )}
         </Grid>
-        <UploadButton isDisabled={isDisabled} handleFile={handleFile} />
-        {!isLoading && (
-          <Button variant="contained" onClick={handleSubmit}>
-            Submit
-          </Button>
-        )}
-      </Grid>
-    </form>
+      </form>
+      <SimpleBackdrop open={backdrop} />
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity={severity}>
+          {status}
+        </Alert>
+      </Snackbar>
+    </>
   );
 }
+export default withRouter(UploadForm);

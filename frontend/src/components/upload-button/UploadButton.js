@@ -1,6 +1,6 @@
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -13,21 +13,12 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     margin: 10,
-    "&.Mui-disabled": {
-      backgroundColor: theme.palette.error.dark,
-      color: theme.palette.error.contrastText,
-      margin: 10,
-    },
   },
 }));
 
 export default function UploadButton(props) {
   const classes = useStyles();
-  const [isDisabled, toggleDisabled] = useState(true);
 
-  useEffect(() => {
-    toggleDisabled(props.isDisabled);
-  }, [props.isDisabled]);
   return (
     <div className={classes.root}>
       <input
@@ -36,7 +27,6 @@ export default function UploadButton(props) {
         id="contained-button-file"
         multiple
         type="file"
-        disabled={isDisabled}
         onChange={props.handleFile}
       />
       <label htmlFor="contained-button-file">
@@ -44,7 +34,6 @@ export default function UploadButton(props) {
           variant="contained"
           color="primary"
           component="span"
-          disabled={isDisabled}
           className={classes.button}
         >
           Upload

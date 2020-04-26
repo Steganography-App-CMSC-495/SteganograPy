@@ -17,7 +17,7 @@ function Encode() {
         </Typography>
       </Grid>
       <Grid item>
-        <UploadForm></UploadForm>
+        <UploadForm hasText url="api/encode"></UploadForm>
       </Grid>
     </Grid>
   );
