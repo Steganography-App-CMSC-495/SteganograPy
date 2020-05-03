@@ -69,7 +69,7 @@ function UploadForm(props) {
               setModalOpen(true);
             })
             .catch((error) => {
-              setStatus("Error", error?.response);
+              setStatus("There was an error encoding your photo");
               setSeverity("error");
             })
             .finally(() => {
@@ -79,14 +79,16 @@ function UploadForm(props) {
         : axios
             .post(props.url, formData)
             .then((res) => {
-              setDecodeMessage(res.data);
+              setDecodeMessage(res.data.message);
+              setModalOpen(true);
             })
             .catch((error) => {
-              setDecodeMessage(error);
+              setStatus(error.response.data.message);
+              setSeverity("error");
+              setOpen(true);
             })
             .finally(() => {
               setBackdrop(false);
-              setModalOpen(true);
             });
     }
   };

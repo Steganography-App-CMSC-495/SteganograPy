@@ -15,7 +15,7 @@ export default function DownloadModal(props) {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"That was quick!"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{"It's done!"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             Your encoded picture is available for download!
