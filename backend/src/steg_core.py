@@ -28,21 +28,23 @@ def binary2str(binary):
 
 
 def getImageData(imagePath):
-    """ Opens the image at imagePath, compiles
+    """ Opens the image at imagePath, converts it to RGBA, compiles
         the data into a dictionary and returns"""
     with Image.open(imagePath) as img:
+        img = img.convert('RGBA')
         data = list(img.getdata())
+        print(str(img.size[0]) + " " + str(img.size[1]))
         return {'width': img.size[0],
                 'height': img.size[1],
                 'pixels': [[list(img.getpixel((x, y)))
-                            for x in range(img.size[1])]
-                           for y in range(img.size[0])],
+                            for x in range(img.size[0])]
+                           for y in range(img.size[1])],
                 'bands': img.getbands()
                 }
 
 def dataToImage(data):
     """ Returns a PILLOW image object for saving or returning on interwebs """
-    with Image.new("".join(data['bands']), (data['width'], data['height'])) as img:
+    with Image.new(''.join(data['bands']), (data['width'], data['height'])) as img:
         img.putdata([tuple(data['pixels'][y][x])
                      for y in range(data['height'])
                      for x in range(data['width'])])
