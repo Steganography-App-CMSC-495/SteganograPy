@@ -63,9 +63,7 @@ function UploadForm(props) {
             responseType: "blob",
           })
             .then((res) => {
-              console.log("res".data, res.data);
               setBlob(res.data);
-              console.log("blob", blob);
               setBackdrop(false);
               setStatus("Successfully Submitted");
               setSeverity("success");
@@ -82,13 +80,11 @@ function UploadForm(props) {
             .post(props.url, formData)
             .then((res) => {
               setBackdrop(false);
-              console.log("res.data", res.data);
               setDecodeMessage(res.data);
               setModalOpen(true);
             })
             .catch((error) => {
               setBackdrop(false);
-              console.log("error", error);
               setDecodeMessage(error);
               setModalOpen(true);
             });
