@@ -3,6 +3,10 @@ import React from "react";
 import { withPageContainer, UploadForm } from "../../components";
 
 function Encode() {
+  let url = "api/encode";
+  if (process.env.NODE_ENV === "production") {
+    url = "https://llucas314.pythonanywhere.com/api/encode";
+  }
   return (
     <Grid
       container
@@ -17,7 +21,7 @@ function Encode() {
         </Typography>
       </Grid>
       <Grid item>
-        <UploadForm hasText url="api/encode"></UploadForm>
+        <UploadForm hasText url={url}></UploadForm>
       </Grid>
     </Grid>
   );
