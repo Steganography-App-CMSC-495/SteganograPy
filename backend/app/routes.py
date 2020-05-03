@@ -19,9 +19,13 @@ def encode():
     if len(request.files['image'].filename) == 0:
         return jsonify(message='Empty file submitted.'), 400
 
+    # below we encrypt the message into the image, putting 'steg-py'
+    # at the beginning for detection later
+
     try:
         image = core.dataToImage(core.evenOddEncryption(
-            core.getImageData(request.files['image']), request.form['message']))
+            core.getImageData(request.files['image']), 'steg-py.' +
+                request.form['message']))
     except RuntimeError as e:
         return jsonify(message=str(e)), 400
 
@@ -34,4 +38,8 @@ def encode():
 
 @app.route('/api/decode', methods=['POST'])
 def decode():
-    return core.evenOddDecryption(core.getImageData(request.files['image']))
+    msg = core.evenOddDecryption(core.getImageData(request.files['image']))
+    if not msg.startswith('steg-py'):
+        return jsonify(message='Image does not contain a message'), 400
+
+    return jsonify(message=msg.split('.')[1])
