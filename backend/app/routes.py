@@ -1,12 +1,15 @@
-from flask import request, send_file
+from flask import request, send_file, jsonify
 from app import app
 from src import steg_core as core
 from io import BytesIO
 
 @app.route('/api/encode', methods=['POST'])
 def encode():
-    image = core.dataToImage(core.evenOddEncryption(
-        core.getImageData(request.files['image']), request.form['message']))
+    try:
+        image = core.dataToImage(core.evenOddEncryption(
+            core.getImageData(request.files['image']), request.form['message']))
+    except RuntimeError as e:
+        return jsonify(message=str(e)), 400
 
     img_io = BytesIO()
     image.save(img_io, 'PNG')
