@@ -9,6 +9,7 @@ import { withRouter } from "react-router-dom";
 import { saveAs } from "file-saver";
 import {
   DownloadModal,
+  MessageModal,
   ImagePreview,
   SimpleBackdrop,
   UploadButton,
@@ -41,8 +42,11 @@ function UploadForm(props) {
   const [modalOpen, setModalOpen] = useState(false);
   const [backdrop, setBackdrop] = useState(false);
   const [blob, setBlob] = useState(null);
+  const [decodeMessage, setDecodeMessage] = useState("");
   const handleDownload = () => {
     saveAs(blob);
+    modalClose();
+    setBlob(null);
   };
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -77,10 +81,16 @@ function UploadForm(props) {
         : axios
             .post(props.url, formData)
             .then((res) => {
+              setBackdrop(false);
               console.log("res.data", res.data);
+              setDecodeMessage(res.data);
+              setModalOpen(true);
             })
             .catch((error) => {
+              setBackdrop(false);
               console.log("error", error);
+              setDecodeMessage(error);
+              setModalOpen(true);
             });
     }
   };
@@ -106,6 +116,9 @@ function UploadForm(props) {
     } else {
       toggleDisabled(true);
     }
+  };
+  const modalClose = () => {
+    setModalOpen(false);
   };
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -153,12 +166,18 @@ function UploadForm(props) {
         </Grid>
       </form>
       <SimpleBackdrop open={backdrop} />
-      {modalOpen && (
-        <DownloadModal
-          setModalOpen={setModalOpen}
-          handleDownload={handleDownload}
-        ></DownloadModal>
-      )}
+      {modalOpen &&
+        (props.hasText ? (
+          <DownloadModal
+            handleClose={modalClose}
+            handleDownload={handleDownload}
+          ></DownloadModal>
+        ) : (
+          <MessageModal
+            handleClose={modalClose}
+            message={decodeMessage}
+          ></MessageModal>
+        ))}
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity={severity}>
           {status}

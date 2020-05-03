@@ -11,7 +11,7 @@ export default function DownloadModal(props) {
     <div>
       <Dialog
         open={true}
-        onClose={() => props.setModalOpen(false)}
+        onClose={() => props.handleClose()}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -22,7 +22,7 @@ export default function DownloadModal(props) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => props.setModalOpen(false)} color="primary">
+          <Button onClick={() => props.handleClose()} color="primary">
             Cancel
           </Button>
           <Button
