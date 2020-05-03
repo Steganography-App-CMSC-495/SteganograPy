@@ -40,6 +40,13 @@ def getImageData(imagePath):
                 'bands': img.getbands()
                 }
 
+def dataToImage(data):
+    """ Returns a PILLOW image object for saving or returning on interwebs """
+    with Image.new("".join(data['bands']), (data['width'], data['height'])) as img:
+        img.putdata([tuple(data['pixels'][y][x])
+                     for y in range(data['height'])
+                     for x in range(data['width'])])
+        return img
 
 def cloneImageData(data):
     """ Utility function to clone image data for  manipulation """
@@ -49,17 +56,14 @@ def cloneImageData(data):
 def saveImage(data, path='./image.png'):
     """ Saves an image to disk using data
     retrieving/modified from loadImage """
-    with Image.new("".join(data['bands']), (data['width'], data['height'])) as img:
-        img.putdata([tuple(data['pixels'][y][x])
-                     for y in range(data['height'])
-                     for x in range(data['width'])])
+    with dataToImage(data) as img:
         img.save(path)
 
 
 def getEvenOddMessageLimit(data):
     """ Calculates how many characters the image can contain
     using even odd encryption """
-    return int(data['width'] * data['height'] * 3 / 9)
+    return int(data['width'] * data['height'] * len(data['bands']) / 9)
 
 
 def evenOddEncryption(_data, msg):
@@ -173,8 +177,8 @@ def getDifferenceData(dataA, dataB, scale=50):
               for compIndex in range(len(dataA['bands']))]
              for x in range(dataA['width'])]
             for y in range(dataA['height'])]
-
     img_data = cloneImageData(dataA)
+
     img_data['pixels'] = data
 
     return img_data
