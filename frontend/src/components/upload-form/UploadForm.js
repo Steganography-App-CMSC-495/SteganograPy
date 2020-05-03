@@ -64,28 +64,28 @@ function UploadForm(props) {
           })
             .then((res) => {
               setBlob(res.data);
-              setBackdrop(false);
               setStatus("Successfully Submitted");
               setSeverity("success");
-              setOpen(true);
               setModalOpen(true);
             })
             .catch((error) => {
-              setBackdrop(false);
               setStatus("Error", error?.response);
               setSeverity("error");
+            })
+            .finally(() => {
               setOpen(true);
+              setBackdrop(false);
             })
         : axios
             .post(props.url, formData)
             .then((res) => {
-              setBackdrop(false);
               setDecodeMessage(res.data);
-              setModalOpen(true);
             })
             .catch((error) => {
-              setBackdrop(false);
               setDecodeMessage(error);
+            })
+            .finally(() => {
+              setBackdrop(false);
               setModalOpen(true);
             });
     }
