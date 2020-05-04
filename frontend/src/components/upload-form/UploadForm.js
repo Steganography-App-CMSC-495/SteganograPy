@@ -4,11 +4,16 @@ import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import MuiAlert from "@material-ui/lab/Alert";
 import axios from "axios";
-import React, { useState, useEffect } from "react";
-import ImagePreview from "../img-preview/ImagePreview";
-import UploadButton from "../upload-button/UploadButton";
-import SimpleBackdrop from "../backdrop/Backdrop";
+import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router-dom";
+import { saveAs } from "file-saver";
+import {
+  DownloadModal,
+  MessageModal,
+  ImagePreview,
+  SimpleBackdrop,
+  UploadButton,
+} from "../index";
 
 const Alert = (props) => {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -34,28 +39,58 @@ function UploadForm(props) {
   const [imagePreviewUrl, setImage] = useState(null);
   const [isLoading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const [backdrop, setBackdrop] = useState(false);
-
+  const [blob, setBlob] = useState(null);
+  const [decodeMessage, setDecodeMessage] = useState("");
+  const handleDownload = () => {
+    saveAs(blob);
+    modalClose();
+    setBlob(null);
+  };
   const handleSubmit = (event) => {
     event.preventDefault();
     setBackdrop(true);
     let formData = new FormData();
     formData.append("message", value);
-    formData.append("upload", file, "fileName");
-    axios
-      .post(props.url, formData)
-      .then(() => {
-        setBackdrop(false);
-        setStatus("Successfully Submitted");
-        setSeverity("success");
-        setOpen(true);
-      })
-      .catch((error) => {
-        setBackdrop(false);
-        setStatus("Error", error?.response);
-        setSeverity("error");
-        setOpen(true);
-      });
+    formData.append("image", file, "fileName");
+    {
+      props.hasText
+        ? axios({
+            method: "post",
+            url: props.url,
+            data: formData,
+            responseType: "blob",
+          })
+            .then((res) => {
+              setBlob(res.data);
+              setStatus("Successfully Submitted");
+              setSeverity("success");
+              setModalOpen(true);
+            })
+            .catch((error) => {
+              setStatus("There was an error encoding your photo");
+              setSeverity("error");
+            })
+            .finally(() => {
+              setOpen(true);
+              setBackdrop(false);
+            })
+        : axios
+            .post(props.url, formData)
+            .then((res) => {
+              setDecodeMessage(res.data.message);
+              setModalOpen(true);
+            })
+            .catch((error) => {
+              setStatus(error.response.data.message);
+              setSeverity("error");
+              setOpen(true);
+            })
+            .finally(() => {
+              setBackdrop(false);
+            });
+    }
   };
   const handleFile = (e) => {
     setLoading(true);
@@ -79,6 +114,9 @@ function UploadForm(props) {
     } else {
       toggleDisabled(true);
     }
+  };
+  const modalClose = () => {
+    setModalOpen(false);
   };
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -126,6 +164,18 @@ function UploadForm(props) {
         </Grid>
       </form>
       <SimpleBackdrop open={backdrop} />
+      {modalOpen &&
+        (props.hasText ? (
+          <DownloadModal
+            handleClose={modalClose}
+            handleDownload={handleDownload}
+          ></DownloadModal>
+        ) : (
+          <MessageModal
+            handleClose={modalClose}
+            message={decodeMessage}
+          ></MessageModal>
+        ))}
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity={severity}>
           {status}

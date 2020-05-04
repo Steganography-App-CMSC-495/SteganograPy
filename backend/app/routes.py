@@ -1,12 +1,45 @@
-
+from flask import request, send_file, jsonify
 from app import app
+from src import steg_core as core
+from io import BytesIO
+
+@app.route('/api/encode', methods=['POST'])
+def encode():
+
+    # validate form entry
+    if not 'image' in request.files:
+        return jsonify(message='No image key in the request files.'), 400
+
+    if not 'message' in request.form:
+        return jsonify(message='No message key in the request form.'), 400
+
+    if len(request.form['message']) == 0:
+        return jsonify(message='Message is empty.'), 400
+
+    if len(request.files['image'].filename) == 0:
+        return jsonify(message='Empty file submitted.'), 400
+
+    # below we encrypt the message into the image, putting 'steg-py'
+    # at the beginning for detection later
+
+    try:
+        image = core.dataToImage(core.evenOddEncryption(
+            core.getImageData(request.files['image']), 'steg-py.' +
+                request.form['message']))
+    except RuntimeError as e:
+        return jsonify(message=str(e)), 400
+
+    img_io = BytesIO()
+    image.save(img_io, 'PNG')
+    img_io.seek(0)
+
+    return send_file(img_io, mimetype='image/png')
 
 
-@app.route('/message')
-def get_message():
-    return {'message': 'Hello from backend!'}
+@app.route('/api/decode', methods=['POST'])
+def decode():
+    msg = core.evenOddDecryption(core.getImageData(request.files['image']))
+    if not msg.startswith('steg-py'):
+        return jsonify(message='Image does not contain a message'), 400
 
-
-@app.route('/m2')
-def get_another():
-    return {'message': 'This is cool'}
+    return jsonify(message=msg.split('.')[1])

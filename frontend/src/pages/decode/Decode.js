@@ -3,6 +3,10 @@ import React from "react";
 import { withPageContainer, UploadForm } from "../../components";
 
 function Decode() {
+  let url = "api/decode";
+  if (process.env.NODE_ENV === "production") {
+    url = "https://llucas314.pythonanywhere.com/api/decode";
+  }
   return (
     <Grid
       container
@@ -17,7 +21,7 @@ function Decode() {
         </Typography>
       </Grid>
       <Grid item>
-        <UploadForm url="api/decode"></UploadForm>
+        <UploadForm url={url}></UploadForm>
       </Grid>
     </Grid>
   );
