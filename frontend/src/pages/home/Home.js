@@ -6,6 +6,8 @@ import ImageSearchIcon from "@material-ui/icons/ImageSearch";
 import LockIcon from "@material-ui/icons/Lock";
 import InfoIcon from "@material-ui/icons/Info";
 import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import AddBoxIcon from '@material-ui/icons/AddBox';
 import Tooltip from "@material-ui/core/Tooltip";
 import Zoom from "@material-ui/core/Zoom";
 function Home() {
@@ -69,6 +71,30 @@ function Home() {
               <PeopleAltIcon color="primary" style={{ fontSize: 75 }} />
             </Tooltip>
             <Typography variant="body2">Team</Typography>
+          </NavLink>
+        </Grid>
+        <Grid item xs={6} style={{ textAlign: "center" }}>
+          <NavLink to="/create-user">
+            <Tooltip
+              TransitionComponent={Zoom}
+              title="Create a user account to save images"
+              placement="top"
+            >
+              <AddBoxIcon color="primary" style={{ fontSize: 75 }} />
+            </Tooltip>
+            <Typography variant="body2">Create Account</Typography>
+          </NavLink>
+        </Grid>
+        <Grid item xs={6} style={{ textAlign: "center" }}>
+          <NavLink to="/log-in">
+            <Tooltip
+              TransitionComponent={Zoom}
+              title="Log in to your account"
+              placement="top"
+            >
+              <AccountBoxIcon color="primary" style={{ fontSize: 75 }} />
+            </Tooltip>
+            <Typography variant="body2">Log In</Typography>
           </NavLink>
         </Grid>
       </Grid>
