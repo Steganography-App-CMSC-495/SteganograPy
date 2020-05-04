@@ -11,7 +11,7 @@ import {
   DownloadModal,
   MessageModal,
   SimpleBackdrop,
-  UploadButton,
+  UserButton,
 } from "../index";
 
 const Alert = (props) => {
@@ -123,6 +123,7 @@ function UserForm(props) {
         <Grid container direction="column" alignItems="center">
           <Grid item xs={7} sm={12}>
             {props.hasText && (
+              <div>
               <TextField
                 id="filled-multiline-static"
                 label="Message"
@@ -130,9 +131,17 @@ function UserForm(props) {
                 onChange={handleChange}
                 className={classes.input}
               />
+              <TextField
+                id="filled-multiline-static"
+                label="Password"
+                variant="filled"
+                onChange={handleChange}
+                className={classes.input}
+              />
+              </div>
             )}
           </Grid>
-          <UploadButton isDisabled={isDisabled} handleSubmit={handleSubmit} />
+          <UserButton isDisabled={isDisabled} handleSubmit={handleSubmit} />
         </Grid>
       </form>
       <SimpleBackdrop open={backdrop} />

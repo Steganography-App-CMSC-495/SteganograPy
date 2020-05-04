@@ -14,8 +14,8 @@ function App() {
           <Route path={"/decode"} component={Decode}></Route>
           <Route path={"/about"} component={About}></Route>
           <Route path={"/team"} component={Team}></Route>
-          <Route path={"/create_user"} component={CreateUser}></Route>
-          <Route path={"/log_in"} component={LogIn}></Route>
+          <Route path={"/create-user"} component={CreateUser}></Route>
+          <Route path={"/log-in"} component={LogIn}></Route>
         </Switch>
       </Router>
     </Theme>
