@@ -7,7 +7,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 import {
-  MessageModal,
+  LoginModal,
   SimpleBackdrop
 } from "../index";
 
@@ -73,10 +73,10 @@ function UserForm(props) {
   };
   const modalClose = () => {
     setModalOpen(false);
-  }
+  };
   const handleClose = () => {
     setOpen(false)
-  }
+  };
 
   return (
     <>
@@ -115,15 +115,15 @@ function UserForm(props) {
       <SimpleBackdrop open={backdrop} />
       {modalOpen &&
         (props.hasText ? (
-          <MessageModal
+          <LoginModal
             handleClose={modalClose}
-            message={"still testing this"}
-          ></MessageModal>
+            message={"Successfully created and/or logged in"}
+          ></LoginModal>
         ) : (
-          <MessageModal
+          <LoginModal
             handleClose={modalClose}
             message={"this should not be seen"}
-          ></MessageModal>
+          ></LoginModal>
         ))}
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity={severity}>
