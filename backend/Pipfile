@@ -12,6 +12,9 @@ piexif = "*"
 stegano = "*"
 flask = "*"
 python-dotenv = "*"
+flask-sqlalchemy = "*"
+flask-login = "*"
+pymysql = "*"
 
 [requires]
 python_version = "3.8"
