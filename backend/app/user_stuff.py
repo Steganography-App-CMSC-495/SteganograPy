@@ -27,8 +27,12 @@ def logout():
 def createuser():
     if not 'username' in request.form:
         return jsonify(message='No username in form sent'), 400
+    if len(request.form['username']) == 0:
+            return jsonify(message='No username in form sent'), 400
     if not 'password' in request.form:
         return jsonify(message='No password in form sent'), 400
+    if len(request.form['password']) == 0:
+            return jsonify(message='No password in form sent'), 400
     # check if username already exists
     user = User.query.filter_by(username=request.form['username']).first()
     if not user is None:
@@ -44,17 +48,33 @@ def createuser():
 
 @app.route('/api/login', methods=['POST'])
 def login():
-   if current_user.is_authenticated:
-       return jsonify(message='You are already logged in!')
+    if not 'username' in request.form:
+        return jsonify(message='No username in form sent'), 400
+    if len(request.form['username']) == 0:
+        return jsonify(message='No username in form sent'), 400
+    if not 'password' in request.form:
+        return jsonify(message='No password in form sent'), 400
+    if len(request.form['password']) == 0:
+        return jsonify(message='No password in form sent'), 400
 
-   if not 'username' in request.form:
-       return jsonify(message='No username in form sent'), 400
-   if not 'password' in request.form:
-       return jsonify(message='No password in form sent'), 400
+    if current_user.is_authenticated and current_user.username==request.form['username']:
+        return jsonify(message='You are already logged in'), 400
 
-   user = User.query.filter_by(username=request.form['username']).first()
+    try:
+        user = User.query.filter_by(username=request.form['username']).first()
+        if not (user.password==request.form['password']):
+            return jsonify(message='Password is incorrect')
+        login_user(user)
+    except:
+        return jsonify(message='There was a problem with your username')
 
-   if user is None or not (request.form['password']==user.password):
-       return jsonify(message = 'Username or password is incorrect')
-   login_user(user)
-   return jsonify(message='You have been logged in')
+    return jsonify(message='You have been logged in')
+
+
+    #if user is None:
+    #    return jsonify(message='User does not exist')
+    #if not (request.form['password']==user.password):
+    #    return jsonify(message='Password is incorrect')
+
+    #login_user(user)
+    #return jsonify(message='You have been logged in')
