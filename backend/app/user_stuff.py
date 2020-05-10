@@ -1,55 +1,60 @@
 from flask import request, send_file, jsonify
-from app import app
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, UserMixin, current_user, login_user, logout_user
+from app import app, db, login
+from flask_login import UserMixin, current_user, login_user, \
+    logout_user, login_required
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://sql9338565:notMYpassword!627@sql9.freemysqlhosting.net/sql9338565'
-db = SQLAlchemy(app)
 
 class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(128), index=True, unique=True)
+    password = db.Column(db.String(128))
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
-login = LoginManager(app)
+@login.user_loader
+def load_user(user_id):
+    return User.query.filter_by(id=user_id).first()
+
 
 @app.route('/api/logout', methods=['POST'])
+@login_required
 def logout():
     logout_user()
+    return jsonify(message='Logged out')
 
 
 @app.route('/api/createuser', methods=['POST'])
 def createuser():
-    try:
-        console.log(request.form.get('username'))
-    except RuntimeError as e:
-        return jsonify(message=str(e)), 400
+    if not 'username' in request.form:
+        return jsonify(message='No username in form sent'), 400
+    if not 'password' in request.form:
+        return jsonify(message='No password in form sent'), 400
+    # check if username already exists
+    user = User.query.filter_by(username=request.form['username']).first()
+    if not user is None:
+        return jsonify(message='Username is taken')
+
+    # otherwise create it
+    db.session.add(User(username=request.form['username'],
+        password=request.form['password']))
+    db.session.commit()
+    #log them in
+    return login()
 
 
-#@app.route('/api/login', methods=['GET','POST'])
-#def login():
-#    if current_user.is_authenticated:
-#        return jsonify(message='You are already logged in!')
-    #something to get form data?
-#    try:
-#        user = User.query.filter_by(username=request.data.username)
-#    except RuntimeError as e:
-#        return jsonify(message='issue requesting user from db')
+@app.route('/api/login', methods=['POST'])
+def login():
+   if current_user.is_authenticated:
+       return jsonify(message='You are already logged in!')
 
-#    if user is None or not (request.password==user.password):
-#        return jsonify(message = 'Username or password is incorrect')
-#    login_user(user)
-#    return jsonify(message = "You have been logged in")
+   if not 'username' in request.form:
+       return jsonify(message='No username in form sent'), 400
+   if not 'password' in request.form:
+       return jsonify(message='No password in form sent'), 400
 
+   user = User.query.filter_by(username=request.form['username']).first()
 
-
-
-#@app.route('/api/createuser', methods=['GET','POST'])
-#def createuser():
-    #something to get form data?
-#    user = User.query.filter_by(username=request.form['userMessage'])
-#    if user is not None:
-#        return jsonify(message = 'That user already exists')
-#    user = User(username=request.form['usernameMessage'],password=request.form['passwordMessage'])
-#    db.session.add(user)
-#    db.session.commit()
-#    return jsonify(message= 'Your account has been created')
+   if user is None or not (request.form['password']==user.password):
+       return jsonify(message = 'Username or password is incorrect')
+   login_user(user)
+   return jsonify(message='You have been logged in')
