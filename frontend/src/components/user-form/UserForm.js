@@ -4,15 +4,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import MuiAlert from "@material-ui/lab/Alert";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
-import { saveAs } from "file-saver";
 import {
-  DownloadModal,
   MessageModal,
-  SimpleBackdrop,
-  UserButton,
+  SimpleBackdrop
 } from "../index";
+
 
 const Alert = (props) => {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -30,87 +28,55 @@ const useStyles = makeStyles((theme) => ({
 
 function UserForm(props) {
   const classes = useStyles();
-  const [value, setValue] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [status, setStatus] = useState("");
   const [severity, setSeverity] = useState("success");
-  const [isDisabled, toggleDisabled] = useState(true);
-  const [isLoading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [backdrop, setBackdrop] = useState(false);
-  const [blob, setBlob] = useState(null);
-  const handleDownload = () => {
-    saveAs(blob);
-    modalClose();
-    setBlob(null);
-  };
+
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    setBackdrop(true);
-    let formData = new FormData();
-    formData.append("message", value);
-    formData.append("message", value);
-    {
-      props.hasText
-        ? axios({
-            method: "post",
-            url: props.url,
-            data: formData,
-            responseType: "blob",
-          })
-            .then((res) => {
-              setBlob(res.data);
-              setStatus("Successfully Submitted");
-              setSeverity("success");
-              setModalOpen(true);
-            })
-            .catch((error) => {
-              setStatus("There was an error");
-              setSeverity("error");
-            })
-            .finally(() => {
-              setOpen(true);
-              setBackdrop(false);
-            })
-        : axios
-            .post(props.url, formData)
-            .then((res) => {
-              setModalOpen(true);
-            })
-            .catch((error) => {
-              setStatus(error.response.data.message);
-              setSeverity("error");
-              setOpen(true);
-            })
-            .finally(() => {
-              setBackdrop(false);
-            });
-    }
+    let formData = new FormData()
+    formData.append('username', username);
+    formData.append('password', password);
+    axios({
+      method: "post",
+      url: props.url,
+      data: formData,
+      response: "text"
+    })
+      .then((res) => {
+        setStatus("Successfully Submitted");
+        setSeverity("success");
+        setModalOpen(true);
+      })
+      .catch((error) => {
+        setStatus(error.response.data.message);
+        setSeverity("error");
+      })
+      .finally(() => {
+        setOpen(true);
+        setBackdrop(false);
+      })
   };
-  const handleChange = (event) => {
+
+  const handleUserChange = (event) => {
     const message = event.target.value;
-    setValue(message);
-    if (message.length > 0) {
-      toggleDisabled(false);
-    } else {
-      toggleDisabled(true);
-    }
+    setUsername(message);
+  };
+  const handlePasswordChange = (event) => {
+    const message = event.target.value;
+    setPassword(message);
   };
   const modalClose = () => {
     setModalOpen(false);
-  };
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpen(false);
-  };
-  useEffect(() => {
-    if (!props.hasText) {
-      toggleDisabled(false);
-    }
-  }, [props]);
+  }
+  const handleClose = () => {
+    setOpen(false)
+  }
 
   return (
     <>
@@ -125,36 +91,45 @@ function UserForm(props) {
             {props.hasText && (
               <div>
               <TextField
-                id="filled-multiline-static"
-                label="Message"
+                id="username"
+                label="Username"
                 variant="filled"
-                onChange={handleChange}
+                onChange={handleUserChange}
                 className={classes.input}
               />
               <TextField
-                id="filled-multiline-static"
+                id="password"
                 label="Password"
                 variant="filled"
-                onChange={handleChange}
+                onChange={handlePasswordChange}
                 className={classes.input}
               />
               </div>
             )}
           </Grid>
-          <UserButton isDisabled={isDisabled} handleSubmit={handleSubmit} />
+          <Button variant="contained" onClick={handleSubmit}>
+            Submit
+          </Button>
         </Grid>
       </form>
       <SimpleBackdrop open={backdrop} />
       {modalOpen &&
         (props.hasText ? (
-          <DownloadModal
+          <MessageModal
             handleClose={modalClose}
-          ></DownloadModal>
+            message={"still testing this"}
+          ></MessageModal>
         ) : (
           <MessageModal
             handleClose={modalClose}
+            message={"this should not be seen"}
           ></MessageModal>
         ))}
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity={severity}>
+          {status}
+        </Alert>
+      </Snackbar>
     </>
   );
 }

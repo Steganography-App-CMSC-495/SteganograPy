@@ -4,9 +4,6 @@ import { withPageContainer, UserForm } from "../../components";
 
 function LogIn() {
   let url = "api/login";
-  if (process.env.NODE_ENV === "production") {
-    url = "https://llucas314.pythonanywhere.com/api/encode";
-  }
   return (
     <Grid
       container

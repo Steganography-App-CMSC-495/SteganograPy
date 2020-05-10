@@ -4,9 +4,7 @@ import { withPageContainer, UserForm } from "../../components";
 
 function CreateUser() {
   let url = "api/createuser";
-  if (process.env.NODE_ENV === "production") {
-    url = "https://llucas314.pythonanywhere.com/api/encode";
-  }
+
   return (
     <Grid
       container
