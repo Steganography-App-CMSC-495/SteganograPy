@@ -36,8 +36,18 @@ function Header(props) {
         {pathname !== "/" && (
           <Grid container item justify="space-evenly">
             {pages.map((page, i) => (
-              <NavLink key={i} to={page.link}>
-                {page.title.toUpperCase()}
+              <NavLink
+                style={{ color: "inherit", textDecoration: "none" }}
+                key={i}
+                to={page.link}
+              >
+                {props.location.pathname === page.link ? (
+                  <span style={{ color: "#307FE2" }}>
+                    {page.title.toUpperCase()}
+                  </span>
+                ) : (
+                  page.title.toUpperCase()
+                )}
               </NavLink>
             ))}
           </Grid>
