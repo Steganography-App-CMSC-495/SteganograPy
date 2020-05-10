@@ -44,7 +44,8 @@ function UploadForm(props) {
   const [blob, setBlob] = useState(null);
   const [decodeMessage, setDecodeMessage] = useState("");
   const handleDownload = () => {
-    saveAs(blob);
+    const fileName = file.name.split(".");
+    saveAs(blob, `${fileName[0]}.png`);
     modalClose();
     setBlob(null);
   };
