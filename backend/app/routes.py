@@ -1,7 +1,8 @@
-from flask import request, send_file, jsonify
+from flask import request, jsonify, Response
 from app import app
 from src import steg_core as core
 from io import BytesIO
+from werkzeug.wsgi import FileWrapper
 
 @app.route('/api/encode', methods=['POST'])
 def encode():
@@ -32,8 +33,8 @@ def encode():
     img_io = BytesIO()
     image.save(img_io, 'PNG')
     img_io.seek(0)
-
-    return send_file(img_io, mimetype='image/png')
+    w = FileWrapper(img_io)
+    return Response(w, mimetype="image/png", direct_passthrough=True)
 
 
 @app.route('/api/decode', methods=['POST'])
