@@ -5,6 +5,9 @@ import { UserContext } from "../../UserContext";
 import { Redirect } from "react-router-dom";
 function CreateUser() {
   let url = "api/createuser";
+  if (process.env.NODE_ENV === "production") {
+    url = "https://llucas314.pythonanywhere.com/api/createuser";
+  }
   const { isLoggedIn, setLogin } = useContext(UserContext);
   return (
     <>
