@@ -5,6 +5,9 @@ import { UserContext } from "../../UserContext";
 import { Redirect } from "react-router-dom";
 function LogIn() {
   let url = "api/login";
+  if (process.env.NODE_ENV === "production") {
+    url = "https://llucas314.pythonanywhere.com/api/login";
+  }
   const { isLoggedIn, setLogin } = useContext(UserContext);
   if (isLoggedIn) {
     return <Redirect to="/" />;

@@ -14,6 +14,10 @@ import { UserContext } from "../../UserContext";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
 function Home() {
+  let url = "api/logout";
+  if (process.env.NODE_ENV === "production") {
+    url = "https://llucas314.pythonanywhere.com/api/logout";
+  }
   const { isLoggedIn, setLogin } = useContext(UserContext);
   const loggedOutLinks = (
     <>
@@ -98,7 +102,7 @@ function Home() {
           to="/"
           onClick={(e) => {
             e.preventDefault();
-            axios("/logout")
+            axios(url)
               .then((res) => {
                 console.log(res);
               })

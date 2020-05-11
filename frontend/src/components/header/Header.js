@@ -17,6 +17,10 @@ const unAuthPages = [
   { link: "/log-in", title: "Log In" },
 ];
 function Header(props) {
+  let url = "api/logout";
+  if (process.env.NODE_ENV === "production") {
+    url = "https://llucas314.pythonanywhere.com/api/logout";
+  }
   const [links, setLinks] = useState(authPages);
   const { isLoggedIn, setLogin } = useContext(UserContext);
   useEffect(() => {
@@ -70,7 +74,7 @@ function Header(props) {
                 style={{ color: "inherit", textDecoration: "none" }}
                 onClick={(e) => {
                   e.preventDefault();
-                  axios("/logout")
+                  axios(url)
                     .then((res) => {
                       console.log(res);
                     })
