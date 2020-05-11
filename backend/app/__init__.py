@@ -1,10 +1,12 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+<<<<<<< HEAD
 from flask_cors import CORS
+=======
+>>>>>>> ad9d33217a79dbe586a67b682e35deddf59d7835
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
 
 app.config.from_pyfile('settings.py')
 
