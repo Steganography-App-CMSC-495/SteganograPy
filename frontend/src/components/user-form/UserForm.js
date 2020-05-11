@@ -47,10 +47,12 @@ function UserForm(props) {
         setSeverity("success");
         setModalOpen(true);
         setLogin(true);
+        console.log(res);
       })
       .catch((error) => {
         setStatus(error.response.data.message);
         setSeverity("error");
+        console.log(error);
       })
       .finally(() => {
         setOpen(true);

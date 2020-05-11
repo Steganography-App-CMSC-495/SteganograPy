@@ -2,6 +2,7 @@ import { Grid, Typography, Button } from "@material-ui/core";
 import React, { useState, useEffect, useContext } from "react";
 import { NavLink, withRouter } from "react-router-dom";
 import { UserContext } from "../../UserContext";
+import axios from "axios";
 const authPages = [
   { link: "/", title: "Home" },
   { link: "/encode", title: "Encode Image" },
@@ -69,8 +70,15 @@ function Header(props) {
                 style={{ color: "inherit", textDecoration: "none" }}
                 onClick={(e) => {
                   e.preventDefault();
-                  setLogin(false);
-                  props.history.push("/");
+                  axios("/logout")
+                    .then((res) => {
+                      console.log(res);
+                    })
+                    .catch((error) => console.log(error))
+                    .finally(() => {
+                      setLogin(false);
+                      props.history.push("/");
+                    });
                 }}
               >
                 LOGOUT

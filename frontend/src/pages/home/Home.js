@@ -12,6 +12,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Zoom from "@material-ui/core/Zoom";
 import { UserContext } from "../../UserContext";
 import { Redirect } from "react-router-dom";
+import axios from "axios";
 function Home() {
   const { isLoggedIn, setLogin } = useContext(UserContext);
   const loggedOutLinks = (
@@ -97,7 +98,14 @@ function Home() {
           to="/"
           onClick={(e) => {
             e.preventDefault();
-            setLogin(false);
+            axios("/logout")
+              .then((res) => {
+                console.log(res);
+              })
+              .catch((error) => console.log(error))
+              .finally(() => {
+                setLogin(false);
+              });
           }}
         >
           <Tooltip
