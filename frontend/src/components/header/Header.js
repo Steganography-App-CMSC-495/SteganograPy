@@ -1,23 +1,39 @@
-import { Grid, Typography } from "@material-ui/core";
-import React from "react";
+import { Grid, Typography, Button } from "@material-ui/core";
+import React, { useState, useEffect, useContext } from "react";
 import { NavLink, withRouter } from "react-router-dom";
-
+import { UserContext } from "../../UserContext";
+import axios from "axios";
+const authPages = [
+  { link: "/", title: "Home" },
+  { link: "/encode", title: "Encode Image" },
+  { link: "/decode", title: "Decode Image" },
+  { link: "/about", title: "About" },
+  { link: "/team", title: "Team" },
+  // { link: "/create-user", title: "Create User" },
+  // { link: "/log-in", title: "Log In" },
+];
+const unAuthPages = [
+  { link: "/create-user", title: "Create User" },
+  { link: "/log-in", title: "Log In" },
+];
 function Header(props) {
+  const [links, setLinks] = useState(authPages);
+  const { isLoggedIn, setLogin } = useContext(UserContext);
+  useEffect(() => {
+    setLinks(unAuthPages);
+    if (isLoggedIn) {
+      setLinks(authPages);
+    }
+  }, [isLoggedIn]);
   const {
     location: { pathname },
   } = props;
-  const pages = [
-    { link: "/", title: "Home" },
-    { link: "/encode", title: "Encode Image" },
-    { link: "/decode", title: "Decode Image" },
-    { link: "/about", title: "About" },
-    { link: "/team", title: "Team" },
-  ];
-  const getTitle = (path) => {
-    const match = pages.find((element) => {
+
+  const getTitle = (path = "/") => {
+    const match = links.find((element) => {
       return element.link === path;
     });
-    return match.title.toLowerCase();
+    return match?.title.toLowerCase();
   };
 
   return (
@@ -33,7 +49,7 @@ function Header(props) {
         </Typography>
         {pathname !== "/" && (
           <Grid container item justify="space-evenly">
-            {pages.map((page, i) => (
+            {links.map((page, i) => (
               <NavLink
                 style={{ color: "inherit", textDecoration: "none" }}
                 key={i}
@@ -48,6 +64,26 @@ function Header(props) {
                 )}
               </NavLink>
             ))}
+            {isLoggedIn && (
+              <NavLink
+                to="/"
+                style={{ color: "inherit", textDecoration: "none" }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  axios("/logout")
+                    .then((res) => {
+                      console.log(res);
+                    })
+                    .catch((error) => console.log(error))
+                    .finally(() => {
+                      setLogin(false);
+                      props.history.push("/");
+                    });
+                }}
+              >
+                LOGOUT
+              </NavLink>
+            )}
           </Grid>
         )}
       </Grid>
