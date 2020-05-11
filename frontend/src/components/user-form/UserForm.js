@@ -50,16 +50,14 @@ function UserForm(props) {
         console.log(res);
       })
       .catch((error) => {
-        if (error.status === 500) {
+        if (error?.response?.status === 500) {
           setStatus("Successfully Submitted");
           setSeverity("success");
           setModalOpen(true);
           setLogin(true);
-          console.log(error);
         }
         setStatus(error.response.data.message);
         setSeverity("error");
-        console.log(error);
       })
       .finally(() => {
         setOpen(true);
