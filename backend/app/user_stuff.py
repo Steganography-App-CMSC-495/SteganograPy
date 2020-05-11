@@ -50,7 +50,7 @@ def login():
         return jsonify(message='No password in form sent'), 400
 
     if current_user.is_authenticated:
-        return jsonify(message='You are already logged in'), 400
+        return jsonify(message='You have been logged in')
 
     user = User.query.filter_by(username=request.form['username']).first()
     if user is None or user.password != request.form['password']:

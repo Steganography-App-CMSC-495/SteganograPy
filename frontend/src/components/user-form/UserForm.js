@@ -1,17 +1,13 @@
-import { Button, Grid } from "@material-ui/core";
+import { Button, Grid, Input } from "@material-ui/core";
 import Snackbar from "@material-ui/core/Snackbar";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import MuiAlert from "@material-ui/lab/Alert";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { withRouter } from "react-router-dom";
-import {
-  LoginModal,
-  SimpleBackdrop
-} from "../index";
-
-
+import { LoginModal, SimpleBackdrop } from "../index";
+import { UserContext } from "../../UserContext";
 const Alert = (props) => {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 };
@@ -35,32 +31,33 @@ function UserForm(props) {
   const [open, setOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [backdrop, setBackdrop] = useState(false);
-
-
+  const { isLoggedIn, setLogin } = useContext(UserContext);
   const handleSubmit = (event) => {
-    event.preventDefault();
-    let formData = new FormData()
-    formData.append('username', username);
-    formData.append('password', password);
+    let formData = new FormData();
+    formData.append("username", username);
+    formData.append("password", password);
     axios({
       method: "post",
       url: props.url,
       data: formData,
-      response: "text"
+      response: "text",
     })
       .then((res) => {
         setStatus("Successfully Submitted");
         setSeverity("success");
         setModalOpen(true);
+        setLogin(true);
+        console.log(res);
       })
       .catch((error) => {
         setStatus(error.response.data.message);
         setSeverity("error");
+        console.log(error);
       })
       .finally(() => {
         setOpen(true);
         setBackdrop(false);
-      })
+      });
   };
 
   const handleUserChange = (event) => {
@@ -75,22 +72,17 @@ function UserForm(props) {
     setModalOpen(false);
   };
   const handleClose = () => {
-    setOpen(false)
+    setOpen(false);
   };
 
   return (
     <>
-      <form
-        className={classes.root}
-        noValidate
-        autoComplete="off"
-        onSubmit={handleSubmit}
-      >
+      <form className={classes.root} autoComplete="off" onSubmit={handleSubmit}>
         <Grid container direction="column" alignItems="center">
           <Grid item xs={7} sm={12}>
-            {props.hasText && (
-              <div>
+            <div>
               <TextField
+                required
                 id="username"
                 label="Username"
                 variant="filled"
@@ -98,14 +90,14 @@ function UserForm(props) {
                 className={classes.input}
               />
               <TextField
+                type="password"
                 id="password"
                 label="Password"
                 variant="filled"
                 onChange={handlePasswordChange}
                 className={classes.input}
               />
-              </div>
-            )}
+            </div>
           </Grid>
           <Button variant="contained" onClick={handleSubmit}>
             Submit
@@ -114,15 +106,15 @@ function UserForm(props) {
       </form>
       <SimpleBackdrop open={backdrop} />
       {modalOpen &&
-        (props.hasText ? (
+        (props.login ? (
           <LoginModal
             handleClose={modalClose}
-            message={"Successfully created and/or logged in"}
+            message={"Successfully Logged In"}
           ></LoginModal>
         ) : (
           <LoginModal
             handleClose={modalClose}
-            message={"this should not be seen"}
+            message={"Account Successfully Created"}
           ></LoginModal>
         ))}
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
