@@ -12,6 +12,8 @@ function Header(props) {
     { link: "/decode", title: "Decode Image" },
     { link: "/about", title: "About" },
     { link: "/team", title: "Team" },
+    { link: "/create-user", title: "Create User"},
+    { link: "/log-in", title: "Log In"}
   ];
   const getTitle = (path) => {
     const match = pages.find((element) => {
