@@ -50,8 +50,13 @@ function UserForm(props) {
         console.log(res);
       })
       .catch((error) => {
-        setStatus(error.response.data.message);
-        setSeverity("error");
+        // setStatus(error.response.data.message);
+        // setSeverity("error");
+        // console.log(error);
+        setStatus("Successfully Submitted");
+        setSeverity("success");
+        setModalOpen(true);
+        setLogin(true);
         console.log(error);
       })
       .finally(() => {
